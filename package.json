@@ -1,0 +1,21 @@
+{
+  "name": "uncorn-adventure",
+  "version": "1.0.0",
+  "description": "A 3D game where you control an Uncorn collecting cupcakes",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve ."
+  },
+  "keywords": [
+    "game",
+    "threejs",
+    "3d",
+    "uncorn",
+    "cupcakes"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

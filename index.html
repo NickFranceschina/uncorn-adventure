@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Uncorn Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="info">Uncorn's Adventure</div>
+  <div id="controls">
+    Controls:<br>
+    - Click and drag to rotate Uncorn<br>
+    - Arrow keys to change speed<br>
+    - Space bar to jump (with sound!)<br>
+    - Scroll to zoom in/out<br>
+    - Find and collect cupcakes!
+  </div>
+  <div id="scoreDisplay">Cupcakes: 0</div>
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <script type="module" src="main.js"></script>
+</body>
+</html>
