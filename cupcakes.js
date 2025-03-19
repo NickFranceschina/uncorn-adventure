@@ -99,7 +99,11 @@ export function setupCupcakes(scene, playCupcakeSound) {
     }
     
     // Add the cupcake to the group
-    cupcake.userData = { isCupcake: true, collected: false };
+    cupcake.userData = { 
+        isCupcake: true, 
+        collected: false,
+        spawnTime: Date.now() // Add spawn time tracking
+    };
     
     // Scale the entire cupcake
     cupcake.scale.set(1.25, 1.25, 1.25);
@@ -161,5 +165,23 @@ export function setupCupcakes(scene, playCupcakeSound) {
     animateCupcake();
   }
   
-  return { cupcakeGroup, spawnCupcakes, animateCupcakeCollection };
+  function cleanupOldCupcakes() {
+    const currentTime = Date.now();
+    const maxAge = 30000; // Remove cupcakes after 30 seconds
+    
+    for (let i = cupcakeGroup.children.length - 1; i >= 0; i--) {
+        const cupcake = cupcakeGroup.children[i];
+        if (!cupcake.userData.collected && 
+            currentTime - cupcake.userData.spawnTime > maxAge) {
+            cupcakeGroup.remove(cupcake);
+        }
+    }
+  }
+  
+  return { 
+    cupcakeGroup, 
+    spawnCupcakes, 
+    animateCupcakeCollection,
+    cleanupOldCupcakes 
+  };
 }

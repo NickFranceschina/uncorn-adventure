@@ -26,7 +26,8 @@ const state = {
   spawnInterval: 10000, // Spawn new cupcakes every 10 seconds
   grassRadius: 10,
   cupcakeScore: 0,
-  starScore: 0
+  starScore: 0,
+  maxObjects: 15 // Maximum number of uncollected objects allowed
 };
 
 // Get DOM elements
@@ -46,10 +47,10 @@ const ground = createGround(scene);
 const grassGroup = createGrass(scene, state.grassRadius);
 
 // Setup bubbles
-const { bubbleGroup, spawnBubbles, animateBubbleCollection } = setupBubbles(scene, audio.playBubbleSound);
+const { bubbleGroup, spawnBubbles, animateBubbleCollection, cleanupOldBubbles } = setupBubbles(scene, audio.playBubbleSound);
 
 // Setup cupcakes
-const { cupcakeGroup, spawnCupcakes, animateCupcakeCollection } = setupCupcakes(scene, audio.playCupcakeSound);
+const { cupcakeGroup, spawnCupcakes, animateCupcakeCollection, cleanupOldCupcakes } = setupCupcakes(scene, audio.playCupcakeSound);
 
 // Spawn initial cupcakes
 spawnCupcakes(10);
@@ -245,13 +246,16 @@ function animate() {
   // Spawn new cupcakes periodically
   const currentTime = Date.now();
   if (currentTime - state.lastSpawnTime > state.spawnInterval) {
-    spawnCupcakes(1 + Math.floor(Math.random() * 2)); // Spawn 1-2 new cupcakes
-    state.lastSpawnTime = currentTime;
-  }
-  
-  // Spawn new bubbles periodically
-  if (currentTime - state.lastSpawnTime > state.spawnInterval) {
-    spawnBubbles(1 + Math.floor(Math.random() * 2)); // Spawn 1-2 new bubbles
+    // Spawn cupcakes only if there aren't too many
+    if (cupcakeGroup.children.length < state.maxObjects) {
+        spawnCupcakes(1 + Math.floor(Math.random() * 2));
+    }
+    
+    // Spawn bubbles only if there aren't too many
+    if (bubbleGroup.children.length < state.maxObjects) {
+        spawnBubbles(1 + Math.floor(Math.random() * 2));
+    }
+    
     state.lastSpawnTime = currentTime;
   }
   
@@ -304,6 +308,10 @@ function animate() {
     character.position.z + cameraState.distance * Math.cos(cameraState.tiltAngle)
   );
   camera.lookAt(character.position);
+  
+  // Clean up old objects
+  cleanupOldCupcakes();
+  cleanupOldBubbles();
   
   renderer.render(scene, camera);
 }

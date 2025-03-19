@@ -45,7 +45,11 @@ export function setupBubbles(scene, playBubbleSound) {
     bubble.position.z = Math.sin(angle) * distance;
     bubble.position.y = 2.5 + Math.random() * 0.5; // Float between 2.5 and 3.0 units high
     
-    bubble.userData = { isBubble: true, collected: false };
+    bubble.userData = { 
+      isBubble: true, 
+      collected: false,
+      spawnTime: Date.now() // Add spawn time tracking
+    };
     
     return bubble;
   }
@@ -87,5 +91,23 @@ export function setupBubbles(scene, playBubbleSound) {
     animateBubble();
   }
   
-  return { bubbleGroup, spawnBubbles, animateBubbleCollection };
+  function cleanupOldBubbles() {
+    const currentTime = Date.now();
+    const maxAge = 30000; // Remove bubbles after 30 seconds
+    
+    for (let i = bubbleGroup.children.length - 1; i >= 0; i--) {
+      const bubble = bubbleGroup.children[i];
+      if (!bubble.userData.collected && 
+          currentTime - bubble.userData.spawnTime > maxAge) {
+        bubbleGroup.remove(bubble);
+      }
+    }
+  }
+  
+  return { 
+    bubbleGroup, 
+    spawnBubbles, 
+    animateBubbleCollection,
+    cleanupOldBubbles 
+  };
 } 
