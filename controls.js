@@ -8,6 +8,9 @@ export function initControls(character, state, camera, cameraState, audio) {
   const DOUBLE_TAP_DURATION = 300; // milliseconds between taps
   let initialPinchDistance = 0;
   
+  // Add tilt angle to cameraState if not present
+  cameraState.tiltAngle = Math.PI/12; // Changed from Math.PI/8 to Math.PI/12 (15 degrees)
+  
   // Mouse controls for rotation
   document.addEventListener('mousedown', (e) => {
     isDragging = true;
@@ -61,9 +64,17 @@ export function initControls(character, state, camera, cameraState, audio) {
 
   // Touch controls for rotation, speed, and jumping
   document.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // Prevent default touch behavior
+    e.preventDefault();
     
-    if (e.touches.length === 1) {
+    if (e.touches.length === 2) {
+      // Initialize the previous position for two-finger gestures
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      previousMousePosition = {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2
+      };
+    } else if (e.touches.length === 1) {
       const currentTime = Date.now();
       if (currentTime - lastTapTime < DOUBLE_TAP_DURATION) {
         // Double tap detected - make Uncorn jump
@@ -102,35 +113,59 @@ export function initControls(character, state, camera, cameraState, audio) {
     e.preventDefault();
     
     if (e.touches.length === 2) {
-      // Handle pinch zoom
-      const currentPinchDistance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
       
-      if (initialPinchDistance === 0) {
+      // Calculate the current midpoint
+      const currentMidpoint = {
+        y: (touch1.clientY + touch2.clientY) / 2
+      };
+      
+      // Calculate horizontal distance between fingers
+      const fingerDistance = Math.abs(touch1.clientX - touch2.clientX);
+      
+      // If fingers are roughly horizontal (wider than they are tall)
+      if (Math.abs(touch1.clientY - touch2.clientY) < fingerDistance) {
+        // Calculate vertical movement since last position
+        const deltaY = currentMidpoint.y - previousMousePosition.y;
+        
+        // Adjust tilt angle (negative deltaY to make upward motion tilt camera down)
+        const tiltDelta = -deltaY * 0.005;
+        cameraState.tiltAngle = Math.max(0, Math.min(Math.PI/2, cameraState.tiltAngle + tiltDelta));
+        
+        // Update previous position
+        previousMousePosition = currentMidpoint;
+      } else {
+        // Handle pinch zoom
+        const currentPinchDistance = Math.hypot(
+          touch1.clientX - touch2.clientX,
+          touch1.clientY - touch2.clientY
+        );
+        
+        if (initialPinchDistance === 0) {
+          initialPinchDistance = currentPinchDistance;
+          return;
+        }
+        
+        // Calculate zoom direction and apply a larger scale factor
+        const zoomDirection = currentPinchDistance > initialPinchDistance ? -1 : 1;
+        const scaleFactor = 0.02;
+        const delta = Math.abs(currentPinchDistance - initialPinchDistance) * scaleFactor;
+        
+        // Update the camera state
+        const newDistance = Math.max(2, Math.min(12, cameraState.distance + (zoomDirection * delta)));
+        console.log('Zoom:', {
+          current: currentPinchDistance,
+          initial: initialPinchDistance,
+          direction: zoomDirection,
+          delta: delta,
+          oldDistance: cameraState.distance,
+          newDistance: newDistance
+        });
+        
+        cameraState.distance = newDistance;
         initialPinchDistance = currentPinchDistance;
-        return;
       }
-      
-      // Calculate zoom direction and apply a larger scale factor
-      const zoomDirection = currentPinchDistance > initialPinchDistance ? -1 : 1;
-      const scaleFactor = 0.02;
-      const delta = Math.abs(currentPinchDistance - initialPinchDistance) * scaleFactor;
-      
-      // Update the camera state
-      const newDistance = Math.max(2, Math.min(12, cameraState.distance + (zoomDirection * delta)));
-      console.log('Zoom:', {
-        current: currentPinchDistance,
-        initial: initialPinchDistance,
-        direction: zoomDirection,
-        delta: delta,
-        oldDistance: cameraState.distance,
-        newDistance: newDistance
-      });
-      
-      cameraState.distance = newDistance;
-      initialPinchDistance = currentPinchDistance;
     } else if (e.touches.length === 1 && isDragging) {
       // Handle rotation and speed
       const deltaMove = {
@@ -166,18 +201,18 @@ export function initControls(character, state, camera, cameraState, audio) {
   
   // Add this after the touchend event listener and before the keyboard controls
   document.addEventListener('wheel', (e) => {
-    // Check if this is a pinch gesture (ctrl + wheel)
     if (e.ctrlKey) {
       e.preventDefault();
-      
-      // Convert the wheel delta to a zoom factor
-      // Negative delta means pinch-in (zoom out), positive means pinch-out (zoom in)
+      // Existing pinch zoom code
       const zoomDirection = e.deltaY > 0 ? 1 : -1;
       const scaleFactor = 0.1;
-      
-      // Update the camera state
       const newDistance = Math.max(2, Math.min(12, cameraState.distance + (zoomDirection * scaleFactor)));
       cameraState.distance = newDistance;
+    } else if (e.altKey || (Math.abs(e.deltaX) > 0 && !e.ctrlKey)) { // Better trackpad gesture detection
+      e.preventDefault();
+      // Adjust sensitivity and direction for more natural feel
+      const tiltDelta = e.deltaY * 0.002; // Reduced sensitivity
+      cameraState.tiltAngle = Math.max(0, Math.min(Math.PI/2, cameraState.tiltAngle + tiltDelta));
     }
   }, { passive: false });
   

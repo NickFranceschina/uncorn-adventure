@@ -50,8 +50,9 @@ spawnCupcakes(10);
 
 // Setup controls with camera state
 const cameraState = {
-  distance: 5,  // Initial z distance
-  height: 2     // Initial y height
+  distance: isMobile || isTablet ? 8 : 5,  // Increased initial distance for mobile/tablet
+  height: 2,
+  tiltAngle: Math.PI/12
 };
 
 initControls(character, state, camera, cameraState, audio);
@@ -252,11 +253,11 @@ function animate() {
     }
   });
   
-  // Keep the camera position update:
+  // Update camera position based on tilt angle
   camera.position.set(
-    0, 
-    cameraState.height,
-    cameraState.distance
+    character.position.x,
+    character.position.y + cameraState.distance * Math.sin(cameraState.tiltAngle),
+    character.position.z + cameraState.distance * Math.cos(cameraState.tiltAngle)
   );
   camera.lookAt(character.position);
   
