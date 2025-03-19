@@ -35,7 +35,7 @@ A whimsical 3D browser game where you control a unicorn character collecting cup
   - Drag Up/Down: Control speed
   - Double Tap: Jump
 - **Multi-Touch**
-  - Pinch: Zoom camera
+  - Pinch In/Out: Zoom camera in/out (2-finger pinch)
 
 ## 🛠️ Technical Details
 

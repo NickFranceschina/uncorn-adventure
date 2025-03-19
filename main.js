@@ -48,8 +48,13 @@ const { cupcakeGroup, spawnCupcakes, animateCupcakeCollection } = setupCupcakes(
 // Spawn initial cupcakes
 spawnCupcakes(10);
 
-// Setup controls
-initControls(character, state, camera, audio);
+// Setup controls with camera state
+const cameraState = {
+  distance: 5,  // Initial z distance
+  height: 2     // Initial y height
+};
+
+initControls(character, state, camera, cameraState, audio);
 
 // Animation loop
 function animate() {
@@ -247,8 +252,12 @@ function animate() {
     }
   });
   
-  // Keep the camera stationary, just focused on Uncorn
-  camera.position.set(0, 2, 5);
+  // Keep the camera position update:
+  camera.position.set(
+    0, 
+    cameraState.height,
+    cameraState.distance
+  );
   camera.lookAt(character.position);
   
   renderer.render(scene, camera);

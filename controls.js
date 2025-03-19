@@ -1,4 +1,4 @@
-export function initControls(character, state, camera, audio) {
+export function initControls(character, state, camera, cameraState, audio) {
   let isDragging = false;
   let previousMousePosition = {
     x: 0,
@@ -76,11 +76,15 @@ export function initControls(character, state, camera, audio) {
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
+      previousMousePosition = {
+        x: 0,
+        y: 0
+      };
     }
   }, { passive: false });
   
   document.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Prevent default touch behavior
+    e.preventDefault();
     
     if (e.touches.length === 2) {
       // Handle pinch zoom
@@ -88,8 +92,29 @@ export function initControls(character, state, camera, audio) {
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      const delta = currentPinchDistance - initialPinchDistance;
-      camera.position.z = Math.max(3, Math.min(10, camera.position.z - delta * 0.01));
+      
+      if (initialPinchDistance === 0) {
+        initialPinchDistance = currentPinchDistance;
+        return;
+      }
+      
+      // Calculate zoom direction and apply a larger scale factor
+      const zoomDirection = currentPinchDistance > initialPinchDistance ? -1 : 1;
+      const scaleFactor = 0.02;
+      const delta = Math.abs(currentPinchDistance - initialPinchDistance) * scaleFactor;
+      
+      // Update the camera state
+      const newDistance = Math.max(2, Math.min(12, cameraState.distance + (zoomDirection * delta)));
+      console.log('Zoom:', {
+        current: currentPinchDistance,
+        initial: initialPinchDistance,
+        direction: zoomDirection,
+        delta: delta,
+        oldDistance: cameraState.distance,
+        newDistance: newDistance
+      });
+      
+      cameraState.distance = newDistance;
       initialPinchDistance = currentPinchDistance;
     } else if (e.touches.length === 1 && isDragging) {
       // Handle rotation and speed
@@ -119,9 +144,10 @@ export function initControls(character, state, camera, audio) {
   }, { passive: false });
   
   document.addEventListener('touchend', (e) => {
-    e.preventDefault(); // Prevent default touch behavior
+    e.preventDefault();
     isDragging = false;
-  });
+    initialPinchDistance = 0;
+  }, { passive: false });
   
   // Keyboard controls for speed, jumping, and rotation
   window.addEventListener('keydown', (e) => {
