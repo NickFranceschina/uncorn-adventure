@@ -28,6 +28,10 @@ export function initControls(character, state, camera, audio) {
       // Standard formula for direction vector from rotation angle
       state.characterDirection.x = Math.sin(state.characterRotationY);  
       state.characterDirection.z = Math.cos(state.characterRotationY);
+      
+      // Add vertical movement for speed control (like touch controls)
+      const speedDelta = -deltaMove.y * 0.0005;
+      state.movementSpeed = Math.max(0, Math.min(0.2, state.movementSpeed + speedDelta));
     }
     
     previousMousePosition = {
@@ -121,37 +125,40 @@ export function initControls(character, state, camera, audio) {
   
   // Keyboard controls for speed, jumping, and rotation
   window.addEventListener('keydown', (e) => {
-    console.log('Key pressed:', e.key); // Debug log
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      state.movementSpeed = Math.min(state.movementSpeed + 0.01, 0.2);
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      state.movementSpeed = Math.max(state.movementSpeed - 0.01, 0);
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      console.log('Rotating left, current rotation:', state.characterRotationY); // Debug log
-      state.characterRotationY -= 0.2;
-      character.rotation.y = state.characterRotationY;
-      state.characterDirection.x = Math.sin(state.characterRotationY);
-      state.characterDirection.z = Math.cos(state.characterRotationY);
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      console.log('Rotating right, current rotation:', state.characterRotationY); // Debug log
-      state.characterRotationY += 0.2;
-      character.rotation.y = state.characterRotationY;
-      state.characterDirection.x = Math.sin(state.characterRotationY);
-      state.characterDirection.z = Math.cos(state.characterRotationY);
-    } else if (e.key === ' ') {
-      e.preventDefault();
-      if (!state.isJumping) {
-        state.isJumping = true;
-        state.jumpHeight = 0;
-        state.jumpPhase = "up";
-        
-        // Play jump sound
-        audio.playJumpSound();
-      }
+    switch(e.key) {
+      case 'ArrowUp':
+        e.preventDefault();
+        state.movementSpeed = Math.min(state.movementSpeed + 0.01, 0.2);
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        state.movementSpeed = Math.max(state.movementSpeed - 0.01, 0);
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        state.characterRotationY += 0.3;
+        character.rotation.y = state.characterRotationY;
+        state.characterDirection.x = Math.sin(state.characterRotationY);
+        state.characterDirection.z = Math.cos(state.characterRotationY);
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        state.characterRotationY -= 0.3;
+        character.rotation.y = state.characterRotationY;
+        state.characterDirection.x = Math.sin(state.characterRotationY);
+        state.characterDirection.z = Math.cos(state.characterRotationY);
+        break;
+      case ' ':
+        e.preventDefault();
+        if (!state.isJumping) {
+          state.isJumping = true;
+          state.jumpHeight = 0;
+          state.jumpPhase = "up";
+          
+          // Play jump sound
+          audio.playJumpSound();
+        }
+        break;
     }
   });
   
