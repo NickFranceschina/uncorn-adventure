@@ -7,6 +7,7 @@ A whimsical 3D browser game where you control a unicorn character collecting cup
 1. Visit [game URL]
 2. Works on both desktop and mobile browsers
 3. No installation required!
+4. View source code on [GitHub](https://github.com/NickFranceschina/uncorn-adventure)
 
 ## ✨ Features
 
