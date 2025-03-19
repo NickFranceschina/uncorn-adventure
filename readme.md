@@ -1,57 +1,74 @@
 # Uncorn Adventure
 
-A whimsical 3D game where you control a unicorn character in a magical world. Built with Three.js and vanilla JavaScript.
+A whimsical 3D browser game where you control a unicorn character collecting cupcakes in a magical world. Built with Three.js and vanilla JavaScript.
 
-## Features
+## 🎮 Play Now
 
-- 3D character movement and rotation
-- Jumping mechanics with sound effects
-- Dynamic speed control
-- Camera zoom functionality
-- Mobile-friendly touch controls
-- Desktop keyboard and mouse controls
+1. Visit [game URL]
+2. Works on both desktop and mobile browsers
+3. No installation required!
 
-## Controls
+## ✨ Features
 
-### Desktop Controls
-- **Arrow Keys**
-  - Left/Right: Rotate character
-  - Up/Down: Control movement speed
-- **Space Bar**: Jump
+- Immersive 3D environment with dynamic lighting
+- Smooth character movement and animations
+- Interactive sound effects
+- Real-time physics for jumping
+- Procedurally spawning collectibles
+- Responsive design for all devices
+- Progressive Web App (PWA) support
+
+## 🎯 How to Play
+
+### 🖥️ Desktop Controls
+- **Movement**
+  - Left/Right Arrow Keys: Rotate Uncorn
+  - Up/Down Arrow Keys: Control speed
+  - Space Bar: Jump
 - **Mouse**
-  - Click and drag: Rotate character
-  - Mouse wheel: Zoom camera in/out
+  - Click + Drag: Rotate Uncorn
+  - Mouse Wheel: Zoom camera
 
-### Mobile Controls
-- **Single Finger**
-  - Drag left/right: Rotate character
-  - Drag up/down: Control movement speed
-  - Double tap: Jump
-- **Two Fingers**
-  - Pinch out: Zoom in
-  - Pinch in: Zoom out
+### 📱 Mobile/Tablet Controls
+- **Single Touch**
+  - Drag Left/Right: Rotate Uncorn
+  - Drag Up/Down: Control speed
+  - Double Tap: Jump
+- **Multi-Touch**
+  - Pinch: Zoom camera
 
-## Technical Details
+## 🛠️ Technical Details
 
-- Built with Three.js for 3D rendering
-- Uses vanilla JavaScript for game logic
-- Implements custom physics for jumping
-- Responsive design for both desktop and mobile
-- Touch-optimized controls for mobile devices
+### Built With
+- Three.js for 3D rendering
+- Web Audio API for sound effects
+- Vanilla JavaScript (ES6+)
+- CSS3 for UI elements
+- PWA features for mobile installation
 
-## Development
+### Browser Requirements
+- Modern browser with WebGL support
+- JavaScript enabled
+- Touch events support (for mobile)
 
-To run the game locally:
-1. Clone the repository
-2. Open `index.html` in a modern web browser
-3. No build process required - it's all vanilla JavaScript!
+## 💻 Development
 
-## Browser Support
+### Local Setup
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start local server:
+   ```bash
+   npm start
+   ```
+4. Open `http://localhost:3000` in your browser
 
-The game works best in modern browsers that support:
-- ES6+ JavaScript
-- WebGL
-- Touch events (for mobile devices)
+### Project Structure
 
 ## License
 

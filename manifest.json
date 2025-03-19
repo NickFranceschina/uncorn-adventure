@@ -1,0 +1,16 @@
+{
+  "name": "Uncorn's Adventure",
+  "short_name": "Uncorn",
+  "description": "A whimsical 3D game where you control a unicorn character in a magical world",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#87CEEB",
+  "theme_color": "#87CEEB",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+} 
