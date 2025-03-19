@@ -44,6 +44,21 @@ export function initControls(character, state, camera, cameraState, audio) {
     isDragging = false;
   });
 
+  // Add this after the mouse controls and before the touch controls
+  document.addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    
+    // Make Uncorn jump if not already jumping
+    if (!state.isJumping) {
+      state.isJumping = true;
+      state.jumpHeight = 0;
+      state.jumpPhase = "up";
+      
+      // Play jump sound
+      audio.playJumpSound();
+    }
+  });
+
   // Touch controls for rotation, speed, and jumping
   document.addEventListener('touchstart', (e) => {
     e.preventDefault(); // Prevent default touch behavior
@@ -147,6 +162,23 @@ export function initControls(character, state, camera, cameraState, audio) {
     e.preventDefault();
     isDragging = false;
     initialPinchDistance = 0;
+  }, { passive: false });
+  
+  // Add this after the touchend event listener and before the keyboard controls
+  document.addEventListener('wheel', (e) => {
+    // Check if this is a pinch gesture (ctrl + wheel)
+    if (e.ctrlKey) {
+      e.preventDefault();
+      
+      // Convert the wheel delta to a zoom factor
+      // Negative delta means pinch-in (zoom out), positive means pinch-out (zoom in)
+      const zoomDirection = e.deltaY > 0 ? 1 : -1;
+      const scaleFactor = 0.1;
+      
+      // Update the camera state
+      const newDistance = Math.max(2, Math.min(12, cameraState.distance + (zoomDirection * scaleFactor)));
+      cameraState.distance = newDistance;
+    }
   }, { passive: false });
   
   // Keyboard controls for speed, jumping, and rotation
