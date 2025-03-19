@@ -1,9 +1,21 @@
 export function setupAudio() {
-  // Create audio context for more reliable sound
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  let audioContext = null;
+  
+  // Initialize audio context on first user interaction
+  function initAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      // Resume the audio context
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+  }
   
   // Function to play a sound
   function playSound(frequency, duration, type = 'sine') {
+    if (!audioContext) return; // Skip if audio context isn't initialized
+    
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     
@@ -63,6 +75,7 @@ export function setupAudio() {
   }
   
   return {
+    initAudioContext,
     playSound,
     playJumpSound,
     playLandSound,

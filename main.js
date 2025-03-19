@@ -39,6 +39,11 @@ const { scene, camera, renderer } = setupScene();
 // Setup audio context and sound functions
 const audio = setupAudio();
 
+// Initialize audio context on first interaction
+document.addEventListener('click', () => audio.initAudioContext(), { once: true });
+document.addEventListener('keydown', () => audio.initAudioContext(), { once: true });
+document.addEventListener('touchstart', () => audio.initAudioContext(), { once: true });
+
 // Create character
 const { character, body, legs, hornGroup, leftEye, rightEye, characterBB } = createCharacter(scene);
 
