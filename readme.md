@@ -1,45 +1,58 @@
 # Uncorn Adventure
 
-A fun 3D game where you control a unicorn-like character called "Uncorn" collecting cupcakes in a grassy field.
+A whimsical 3D game where you control a unicorn character in a magical world. Built with Three.js and vanilla JavaScript.
 
 ## Features
 
-- 3D graphics using Three.js
-- Interactive controls for character movement
-- Cupcake collection with sound effects
-- Vibrant visual effects
-- Physics and animation system
-
-## Project Structure
-
-- `index.html` - Main HTML file
-- `styles.css` - CSS styling for the UI
-- `js/` - JavaScript modules
-  - `main.js` - Main game loop and initialization
-  - `scene.js` - Three.js scene setup
-  - `materials.js` - Material definitions for all 3D objects
-  - `character.js` - Uncorn character creation
-  - `environment.js` - Ground and grass generation
-  - `cupcakes.js` - Cupcake creation and collection
-  - `audio.js` - Sound effect system
-  - `controls.js` - User input and controls
-
-## How to Run
-
-1. Clone the repository
-2. Open `index.html` in a modern web browser
-   - For best results, use a local server to avoid CORS issues
+- 3D character movement and rotation
+- Jumping mechanics with sound effects
+- Dynamic speed control
+- Camera zoom functionality
+- Mobile-friendly touch controls
+- Desktop keyboard and mouse controls
 
 ## Controls
 
-- **Mouse drag**: Rotate Uncorn
-- **Arrow keys**: Change movement speed
-- **Space bar**: Jump
-- **Mouse wheel**: Zoom in/out
+### Desktop Controls
+- **Arrow Keys**
+  - Left/Right: Rotate character
+  - Up/Down: Control movement speed
+- **Space Bar**: Jump
+- **Mouse**
+  - Click and drag: Rotate character
+  - Mouse wheel: Zoom camera in/out
 
-## Gameplay
+### Mobile Controls
+- **Single Finger**
+  - Drag left/right: Rotate character
+  - Drag up/down: Control movement speed
+  - Double tap: Jump
+- **Two Fingers**
+  - Pinch out: Zoom in
+  - Pinch in: Zoom out
 
-- Move around the field to find and collect cupcakes
-- Each cupcake collected increases your score
-- New cupcakes appear periodically
-- Enjoy the cheerful sound effects!
+## Technical Details
+
+- Built with Three.js for 3D rendering
+- Uses vanilla JavaScript for game logic
+- Implements custom physics for jumping
+- Responsive design for both desktop and mobile
+- Touch-optimized controls for mobile devices
+
+## Development
+
+To run the game locally:
+1. Clone the repository
+2. Open `index.html` in a modern web browser
+3. No build process required - it's all vanilla JavaScript!
+
+## Browser Support
+
+The game works best in modern browsers that support:
+- ES6+ JavaScript
+- WebGL
+- Touch events (for mobile devices)
+
+## License
+
+MIT License - feel free to use this code for your own projects!
