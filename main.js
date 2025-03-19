@@ -2,9 +2,10 @@ import * as THREE from 'three';
 import { setupScene } from './scene.js';
 import { createCharacter } from './character.js';
 import { createGround, createGrass } from './environment.js';
-import { setupCupcakes } from './cupcakes.js';
+import { setupBubbles } from './bubbles.js';
 import { initControls } from './controls.js';
 import { setupAudio } from './audio.js';
+import { setupCupcakes } from './cupcakes.js';
 
 // Game state
 const state = {
@@ -23,7 +24,9 @@ const state = {
   collectionCooldown: false,
   lastSpawnTime: Date.now(),
   spawnInterval: 10000, // Spawn new cupcakes every 10 seconds
-  grassRadius: 10
+  grassRadius: 10,
+  cupcakeScore: 0,
+  starScore: 0
 };
 
 // Get DOM elements
@@ -42,6 +45,9 @@ const { character, body, legs, hornGroup, leftEye, rightEye, characterBB } = cre
 const ground = createGround(scene);
 const grassGroup = createGrass(scene, state.grassRadius);
 
+// Setup bubbles
+const { bubbleGroup, spawnBubbles, animateBubbleCollection } = setupBubbles(scene, audio.playBubbleSound);
+
 // Setup cupcakes
 const { cupcakeGroup, spawnCupcakes, animateCupcakeCollection } = setupCupcakes(scene, audio.playCupcakeSound);
 
@@ -56,6 +62,9 @@ const cameraState = {
 };
 
 initControls(character, state, camera, cameraState, audio);
+
+// After line 47, add initial bubble spawn:
+spawnBubbles(10);
 
 // Animation loop
 function animate() {
@@ -179,8 +188,8 @@ function animate() {
         audio.playCupcakeSound();
         
         // Increment score
-        state.score++;
-        scoreDisplay.textContent = `Cupcakes: ${state.score}`;
+        state.cupcakeScore++;
+        scoreDisplay.textContent = `Cupcakes: ${state.cupcakeScore} | Stars: ${state.starScore}`;
         
         // Animate cupcake collection
         animateCupcakeCollection(cupcake);
@@ -191,7 +200,44 @@ function animate() {
           state.collectionCooldown = false;
         }, 500);
         
-        break; // Only collect one cupcake at a time
+        break;
+      }
+    }
+  }
+  
+  // Check for bubble collection
+  if (!state.collectionCooldown) {
+    for (let i = 0; i < bubbleGroup.children.length; i++) {
+      const bubble = bubbleGroup.children[i];
+      
+      // Skip already collected bubbles
+      if (bubble.userData.collected) continue;
+      
+      // Create a bounding box for the bubble
+      const bubbleBB = new THREE.Box3().setFromObject(bubble);
+      
+      // Check for collision
+      if (characterBB.intersectsBox(bubbleBB)) {
+        // Mark as collected
+        bubble.userData.collected = true;
+        
+        // Play collection sound
+        audio.playBubbleSound();
+        
+        // Increment score
+        state.starScore++;
+        scoreDisplay.textContent = `Cupcakes: ${state.cupcakeScore} | Stars: ${state.starScore}`;
+        
+        // Animate bubble collection
+        animateBubbleCollection(bubble);
+        
+        // Set cooldown to prevent multiple collections at once
+        state.collectionCooldown = true;
+        setTimeout(() => {
+          state.collectionCooldown = false;
+        }, 500);
+        
+        break;
       }
     }
   }
@@ -203,14 +249,23 @@ function animate() {
     state.lastSpawnTime = currentTime;
   }
   
+  // Spawn new bubbles periodically
+  if (currentTime - state.lastSpawnTime > state.spawnInterval) {
+    spawnBubbles(1 + Math.floor(Math.random() * 2)); // Spawn 1-2 new bubbles
+    state.lastSpawnTime = currentTime;
+  }
+  
   // Set the grass movement direction to be opposite of character direction
   grassGroup.position.x -= state.characterDirection.x * state.movementSpeed;
   grassGroup.position.z -= state.characterDirection.z * state.movementSpeed;
   
   // Set the cupcake movement direction to be opposite of character direction
-  // This creates the illusion of character movement
   cupcakeGroup.position.x -= state.characterDirection.x * state.movementSpeed;
   cupcakeGroup.position.z -= state.characterDirection.z * state.movementSpeed;
+  
+  // Set the bubble movement direction to be opposite of character direction
+  bubbleGroup.position.x -= state.characterDirection.x * state.movementSpeed;
+  bubbleGroup.position.z -= state.characterDirection.z * state.movementSpeed;
   
   // Create wrapping effect by shifting individual grass blades
   // when they get too far from the character
@@ -241,17 +296,6 @@ function animate() {
       blade.rotation.z = (Math.random() - 0.5) * 0.3;
     }
   }
-  
-  // Animate cupcakes to make them more enticing
-  cupcakeGroup.children.forEach((cupcake, index) => {
-    if (!cupcake.userData.collected) {
-      // Gentle bobbing motion
-      cupcake.position.y = -0.7 + Math.sin(state.walkingTime * 0.5 + index * 0.5) * 0.1;
-      
-      // Subtle rotation
-      cupcake.rotation.y += 0.01;
-    }
-  });
   
   // Update camera position based on tilt angle
   camera.position.set(

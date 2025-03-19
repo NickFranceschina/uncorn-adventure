@@ -49,10 +49,24 @@ export function setupAudio() {
     }, 400);
   }
   
+  function playBubbleSound() {
+    // Magical bubble pop sound
+    playSound(1200, 0.1, 'sine');
+    setTimeout(() => playSound(800, 0.15, 'sine'), 50);
+    
+    // Sparkle effect
+    setTimeout(() => {
+      playSound(2000, 0.08, 'triangle');
+      playSound(2400, 0.08, 'triangle');
+      playSound(2800, 0.08, 'triangle');
+    }, 150);
+  }
+  
   return {
     playSound,
     playJumpSound,
     playLandSound,
-    playCupcakeSound
+    playCupcakeSound,
+    playBubbleSound
   };
 }

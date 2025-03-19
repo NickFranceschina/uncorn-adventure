@@ -1,6 +1,6 @@
 # Uncorn Adventure
 
-A whimsical 3D browser game where you control a unicorn character collecting cupcakes in a magical world. Built with Three.js and vanilla JavaScript.
+A whimsical 3D browser game where you control a unicorn character collecting cupcakes and magical star bubbles in a magical world. Built with Three.js and vanilla JavaScript.
 
 ## 🎮 Play Now
 
@@ -12,6 +12,9 @@ A whimsical 3D browser game where you control a unicorn character collecting cup
 
 - Immersive 3D environment with dynamic lighting
 - Smooth character movement and animations
+- Two types of collectibles:
+  - Ground-level cupcakes for regular collection
+  - Floating star bubbles that require jumping to reach
 - Interactive sound effects
 - Real-time physics for jumping
 - Procedurally spawning collectibles
@@ -20,20 +23,26 @@ A whimsical 3D browser game where you control a unicorn character collecting cup
 
 ## 🎯 How to Play
 
+### 🎮 Gameplay
+- Collect cupcakes on the ground
+- Jump to catch magical star bubbles floating in the air
+- Try to get the highest score in both categories!
+
 ### 🖥️ Desktop Controls
 - **Movement**
   - Left/Right Arrow Keys: Rotate Uncorn
   - Up/Down Arrow Keys: Control speed
-  - Space Bar: Jump
+  - Space Bar: Jump to catch star bubbles
 - **Mouse**
   - Click + Drag: Rotate Uncorn
   - Mouse Wheel: Zoom camera
+  - Double-click: Jump
 
 ### 📱 Mobile/Tablet Controls
 - **Single Touch**
   - Drag Left/Right: Rotate Uncorn
   - Drag Up/Down: Control speed
-  - Double Tap: Jump
+  - Double Tap: Jump to catch star bubbles
 - **Multi-Touch**
   - Pinch In/Out: Zoom camera in/out (2-finger pinch)
 
