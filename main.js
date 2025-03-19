@@ -6,6 +6,7 @@ import { setupBubbles } from './bubbles.js';
 import { initControls } from './controls.js';
 import { setupAudio } from './audio.js';
 import { setupCupcakes } from './cupcakes.js';
+import { setupMinimap } from './minimap.js';
 
 // Game state
 const state = {
@@ -71,6 +72,9 @@ initControls(character, state, camera, cameraState, audio);
 
 // After line 47, add initial bubble spawn:
 spawnBubbles(10);
+
+// After setting up scene, camera, and renderer
+const { updateMinimap } = setupMinimap(scene, character);
 
 // Animation loop
 function animate() {
@@ -317,6 +321,9 @@ function animate() {
   // Clean up old objects
   cleanupOldCupcakes();
   cleanupOldBubbles();
+  
+  // In the animation loop, add this before renderer.render():
+  updateMinimap(cupcakeGroup, bubbleGroup);
   
   renderer.render(scene, camera);
 }

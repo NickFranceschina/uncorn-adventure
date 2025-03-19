@@ -16,6 +16,28 @@
   <link rel="stylesheet" href="styles.css">
   <!-- Preload key assets -->
   <link rel="preload" href="https://unpkg.com/three@0.160.0/build/three.module.js" as="script" crossorigin>
+  <style>
+    #minimap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.7);
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1000;
+      background-color: #2D5A27;
+    }
+
+    #minimap canvas {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <div id="info">Uncorn's Adventure</div>
@@ -24,6 +46,7 @@
     <div id="deviceControls"></div>
   </div>
   <div id="scoreDisplay">Cupcakes: 0 | Stars: 0</div>
+  <div id="minimap"></div>
   
   <script>
     // Detect device type
